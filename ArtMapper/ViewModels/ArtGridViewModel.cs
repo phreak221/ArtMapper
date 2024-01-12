@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ArtMapper.Config;
 using ArtMapper.Models;
 using SQLite;
@@ -14,7 +15,7 @@ namespace ArtMapper.ViewModels
     {
         private ObservableCollection<ViewModelBase> _workspaces;
         private ObservableCollection<ArtMapDb> _moviePosterList;
-
+        
         public ObservableCollection<ArtMapDb> MoviePosterList
         {
             get => _moviePosterList;
@@ -38,13 +39,14 @@ namespace ArtMapper.ViewModels
                 OnPropertyChanged("SelectedArtMap");
             }
         }
-
+        
         public ArtGridViewModel(ObservableCollection<ViewModelBase> workspaces)
         {
+            //AddFile_Drop = new RelayCommand(AddArtToList);
             BuildMoviePosterList();
             _workspaces = workspaces;
         }
-
+        
         private void BuildMoviePosterList()
         {
             SQLiteConnection conn = new SQLiteConnection(Settings.DbPath, SQLiteOpenFlags.ReadWrite, false);
