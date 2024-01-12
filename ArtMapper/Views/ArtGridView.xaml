@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="ArtMapper.Views.ArtGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ArtMapper.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ViewResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" Grid.Column="0" Height="540" SelectedItem="{Binding SelectedArtMap}" ItemTemplate="{StaticResource MoviePosterTemplate}" ItemsSource="{Binding MoviePosterList}">
+
+        </ListView>
+        <!--<ListView Grid.Row="0" Grid.Column="0" ItemTemplate="{StaticResource MoviePosterTemplate}" ItemsSource="{Binding Path=MoviePosterList}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="5" />
+                </ItemsPanelTemplate> 
+            </ListView.ItemsPanel>
+        </ListView>-->
+    </Grid>
+</UserControl>
