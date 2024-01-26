@@ -39,6 +39,7 @@ namespace ArtMapper.ViewModels
 
             if (artData != null)
             {
+                ArtMapId = artData.ArtMapID;
                 ArtName = artData.ArtName;
                 ArtPath = artData.ArtPath;
                 ArtDimentions = artData.ArtDimentions;
@@ -50,9 +51,20 @@ namespace ArtMapper.ViewModels
                 ArtMissing = !artData.ArtExists;
             }
         }
-        
-        private string _artName;
 
+        private int _artMapId;
+        public int ArtMapId
+        {
+            get => _artMapId;
+            set
+            {
+                if (_artMapId == value) return;
+                _artMapId = value;
+                OnPropertyChanged("ArtMapId");
+            }
+        }
+
+        private string _artName;
         public string ArtName
         {
             get => _artName;
@@ -65,7 +77,6 @@ namespace ArtMapper.ViewModels
         }
 
         private string _artPath;
-
         public string ArtPath
         {
             get => _artPath;
@@ -78,7 +89,6 @@ namespace ArtMapper.ViewModels
         }
 
         private string _artDimentions;
-
         public string ArtDimentions
         {
             get => _artDimentions;
@@ -91,7 +101,6 @@ namespace ArtMapper.ViewModels
         }
 
         private string _artFileSize;
-
         public string ArtFileSize
         {
             get => _artFileSize;
@@ -104,7 +113,6 @@ namespace ArtMapper.ViewModels
         }
 
         private string _artDateAdded;
-
         public string ArtDateAdded
         {
             get => _artDateAdded;
@@ -117,7 +125,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artIsDeleted;
-
         public bool ArtIsDeleted
         {
             get => _artIsDeleted;
@@ -130,7 +137,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artIsActive;
-
         public bool ArtIsActive
         {
             get => _artIsActive;
@@ -143,7 +149,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artDeleted;
-
         public bool ArtDeleted
         {
             get => _artDeleted;
@@ -156,7 +161,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artFound;
-
         public bool ArtFound
         {
             get => _artFound;
@@ -169,7 +173,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artMissing;
-
         public bool ArtMissing
         {
             get => _artMissing;
@@ -182,7 +185,6 @@ namespace ArtMapper.ViewModels
         }
 
         private bool _artExists;
-
         public bool ArtExists
         {
             get => _artExists;
@@ -199,16 +201,35 @@ namespace ArtMapper.ViewModels
             SQLiteConnection conn = new SQLiteConnection(Settings.DbPath, SQLiteOpenFlags.ReadWrite, false);
             try
             {
-                ArtMapDb art = new ArtMapDb();
-                art.ArtName = _artName;
-                art.ArtPath = _artPath;
-                art.ArtDimentions = _artDimentions;
-                art.ArtFileSize = _artFileSize;
-                art.ArtDateAdded = Convert.ToDateTime(_artDateAdded);
-                art.ArtDeleted = ArtIsDeleted;
-                art.ArtExists = File.Exists(_artPath);
+                if (ArtMapId > 0)
+                {
+                    ArtMapDb mapArt = conn.Table<ArtMapDb>().FirstOrDefault(x => x.ArtMapID == ArtMapId);
+                    if (mapArt != null)
+                    {
+                        mapArt.ArtName = ArtName;
+                        mapArt.ArtPath = ArtPath;
+                        mapArt.ArtDimentions = ArtDimentions;
+                        mapArt.ArtFileSize = ArtFileSize;
+                        mapArt.ArtDateAdded = Convert.ToDateTime(ArtDateAdded);
+                        mapArt.ArtDeleted = ArtIsDeleted;
+                        mapArt.ArtExists = File.Exists(_artPath);
 
-                conn.Insert(art);
+                        conn.Update(mapArt);
+                    }
+                }
+                else
+                {
+                    ArtMapDb art = new ArtMapDb();
+                    art.ArtName = _artName;
+                    art.ArtPath = _artPath;
+                    art.ArtDimentions = _artDimentions;
+                    art.ArtFileSize = _artFileSize;
+                    art.ArtDateAdded = Convert.ToDateTime(_artDateAdded);
+                    art.ArtDeleted = ArtIsDeleted;
+                    art.ArtExists = File.Exists(_artPath);
+
+                    conn.Insert(art);
+                }
 
                 _workspaces.Clear();
                 ArtGridViewModel workspace = new ArtGridViewModel(_workspaces);

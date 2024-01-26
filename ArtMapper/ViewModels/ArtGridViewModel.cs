@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using ArtMapper.Config;
 using ArtMapper.Models;
@@ -19,6 +22,7 @@ namespace ArtMapper.ViewModels
         private ObservableCollection<ArtMapModel> _artPosterList;
         
         public ICommand BtnOpenLocation { get; set; }
+        public ICommand BtnEditImage { get; set; }
 
         public ObservableCollection<ArtMapModel> ArtPosterList
         {
@@ -48,8 +52,31 @@ namespace ArtMapper.ViewModels
         {
             //AddFile_Drop = new RelayCommand(AddArtToList);
             BtnOpenLocation = new RelayCommand(OpenImgLocation);
+            BtnEditImage = new RelayCommand(EditImageInfo);
             BuildMoviePosterList();
             _workspaces = workspaces;
+        }
+
+        private void EditImageInfo(object obj)
+        {
+            int artIndex = (int)obj;
+            SQLiteConnection conn = new SQLiteConnection(Settings.DbPath, SQLiteOpenFlags.ReadWrite, false);
+            try
+            {
+                ArtMapDb art = conn.Table<ArtMapDb>().FirstOrDefault(x => x.ArtMapID == artIndex);
+                _workspaces.Clear();
+                AddArtViewModel workspace = new AddArtViewModel(_workspaces, art);
+                _workspaces.Add(workspace);
+                SetActiveWorkspace(workspace);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"EditImageInfo: {ex.Message}");
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
         private void OpenImgLocation(object obj)
@@ -72,14 +99,18 @@ namespace ArtMapper.ViewModels
                 var arts = conn.Table<ArtMapDb>().ToList();
                 foreach (var art in arts)
                 {
+                    var doesExists = (File.Exists(art.ArtPath));
                     ArtPosterList.Add(new ArtMapModel()
                     {
+                        ArtMapId = art.ArtMapID,
                         ArtName = art.ArtName,
-                        ArtPath = art.ArtPath,
+                        ArtPath = (doesExists) ? art.ArtPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NoPoster.jpg"),
                         ArtDimentions = art.ArtDimentions,
                         ArtDateAdded = art.ArtDateAdded,
-                        ArtExists = art.ArtExists,
-                        OpenLocationCommand = BtnOpenLocation
+                        ArtExists = doesExists,
+                        ArtStatus = art.ArtDeleted ? "Deleted" : "Active",
+                        OpenLocationCommand = BtnOpenLocation,
+                        EditImageCommand = BtnEditImage
                     });
                 }
             }
@@ -91,6 +122,12 @@ namespace ArtMapper.ViewModels
             {
                 conn.Close();
             }
+        }
+
+        public void SetActiveWorkspace(ViewModelBase workspace)
+        {
+            ICollectionView collectionView = CollectionViewSource.GetDefaultView(_workspaces);
+            collectionView?.MoveCurrentTo(workspace);
         }
     }
 }

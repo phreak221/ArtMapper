@@ -21,10 +21,17 @@
                     <TextBlock Text="{Binding Path=ArtDateAdded}" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
+                    <Label Content="Status:" />
+                    <TextBlock Text="{Binding Path=ArtStatus}" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <Label Content="Exists:" />
                     <TextBlock Text="{Binding Path=ArtExists}" VerticalAlignment="Center" />
                 </StackPanel>
-                <Button Content="Open Location" Width="120" Height="23" HorizontalAlignment="Left" Command="{Binding Path=OpenLocationCommand}" CommandParameter="{Binding Path=ArtPath}" />
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Open Location" Width="120" Height="23" HorizontalAlignment="Left" Margin="0 0 5 0" Command="{Binding Path=OpenLocationCommand}" CommandParameter="{Binding Path=ArtPath}" />
+                    <Button Content="Edit" Width="120" Height="23" HorizontalAlignment="Left" Margin="5 0 0 0" Command="{Binding Path=EditImageCommand}" CommandParameter="{Binding Path=ArtMapId}" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </DataTemplate>

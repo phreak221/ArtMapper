@@ -21,6 +21,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView Grid.Column="0" Grid.Row="0" Height="540" SelectedItem="{Binding MoviePoster}" ItemsSource="{Binding ArtPosterList}" ItemTemplate="{StaticResource ArtPosterTemplate}" />
+        <ListView Grid.Column="0" Grid.Row="0" Height="540" SelectedItem="{Binding MoviePoster}" ItemsSource="{Binding ArtPosterList}" ItemTemplate="{StaticResource ArtPosterTemplate}" VerticalAlignment="Top" />
     </Grid>
 </UserControl>
