@@ -197,21 +197,32 @@ namespace ArtMapper.ViewModels
         private void AddNewArtMap(object obj)
         {
             SQLiteConnection conn = new SQLiteConnection(Settings.DbPath, SQLiteOpenFlags.ReadWrite, false);
-            ArtMapDb art = new ArtMapDb();
-            art.ArtName = _artName;
-            art.ArtPath = _artPath;
-            art.ArtDimentions = _artDimentions;
-            art.ArtFileSize = _artFileSize;
-            art.ArtDateAdded = Convert.ToDateTime(_artDateAdded);
-            art.ArtDeleted = ArtIsDeleted;
-            art.ArtExists = File.Exists(_artPath);
+            try
+            {
+                ArtMapDb art = new ArtMapDb();
+                art.ArtName = _artName;
+                art.ArtPath = _artPath;
+                art.ArtDimentions = _artDimentions;
+                art.ArtFileSize = _artFileSize;
+                art.ArtDateAdded = Convert.ToDateTime(_artDateAdded);
+                art.ArtDeleted = ArtIsDeleted;
+                art.ArtExists = File.Exists(_artPath);
 
-            conn.Insert(art);
+                conn.Insert(art);
 
-            _workspaces.Clear();
-            ArtGridViewModel workspace = new ArtGridViewModel(_workspaces);
-            _workspaces.Add(workspace);
-            SetActiveWorkspace(workspace);
+                _workspaces.Clear();
+                ArtGridViewModel workspace = new ArtGridViewModel(_workspaces);
+                _workspaces.Add(workspace);
+                SetActiveWorkspace(workspace);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"AddNewArtMap {ex.Message}");
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
         private void CancelArtMap(object obj)
@@ -224,17 +235,24 @@ namespace ArtMapper.ViewModels
 
         private void SearchForArt(object obj)
         {
-            OpenFileDialog artFileDialog = new OpenFileDialog();
-            if (artFileDialog.ShowDialog() == DialogResult.OK)
+            try
             {
-                ArtPath = artFileDialog.FileName;
-                FileInfo fi = new FileInfo(ArtPath);
-                ArtFileSize = $"{fi.Length}";
-                BitmapImage img = new BitmapImage(new Uri(ArtPath));
-                ArtDimentions = $"{img.Width} X {img.Height}";
-                ArtExists = true;
-                ArtFound = true;
-                ArtMissing = false;
+                OpenFileDialog artFileDialog = new OpenFileDialog();
+                if (artFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ArtPath = artFileDialog.FileName;
+                    FileInfo fi = new FileInfo(ArtPath);
+                    ArtFileSize = $"{fi.Length}";
+                    BitmapImage img = new BitmapImage(new Uri(ArtPath));
+                    ArtDimentions = $"{img.Width} X {img.Height}";
+                    ArtExists = true;
+                    ArtFound = true;
+                    ArtMissing = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"SearchForArt {ex.Message}");
             }
         }
 

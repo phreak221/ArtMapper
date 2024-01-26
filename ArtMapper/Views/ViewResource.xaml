@@ -1,25 +1,30 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <DataTemplate x:Key="MoviePosterTemplate">
+    <DataTemplate x:Key="ArtPosterTemplate">
         <StackPanel Orientation="Horizontal">
-            <Image Width="91" Height="134" Stretch="Fill" Source="{Binding ArtPath}" Margin="0 0 10 0" />
+            <Image Width="91" Height="134" Stretch="Fill" Source="{Binding Path=ArtPath}" Margin="0 0 10 0" />
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Name:" />
-                    <TextBlock Text="{Binding ArtName}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Path=ArtName}" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Location:" />
-                    <TextBlock Text="{Binding ArtPath}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Path=ArtPath}" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Dimentions:" />
+                    <TextBlock Text="{Binding Path=ArtDimentions}" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Date Added:" />
-                    <TextBlock Text="{Binding ArtDateAdded}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Path=ArtDateAdded}" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Exists:" />
-                    <TextBlock Text="{Binding ArtExists}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Path=ArtExists}" VerticalAlignment="Center" />
                 </StackPanel>
+                <Button Content="Open Location" Width="120" Height="23" HorizontalAlignment="Left" Command="{Binding Path=OpenLocationCommand}" CommandParameter="{Binding Path=ArtPath}" />
             </StackPanel>
         </StackPanel>
     </DataTemplate>

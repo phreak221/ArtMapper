@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -46,7 +48,10 @@ namespace ArtMapper.ViewModels
         {
             if (argfiles.Length > 0)
             {
-                ShowAddNewArt(argfiles[0]);
+                if (Regex.Matches(Path.GetExtension(argfiles[0]), "jpg|png", RegexOptions.IgnoreCase).Count > 0)
+                    ShowAddNewArt(argfiles[0]);
+                else
+                    ShowArtGrid();
             }
             else
             {
@@ -88,20 +93,27 @@ namespace ArtMapper.ViewModels
 
         private void ShowAddNewArt(string artfile)
         {
-            ArtMapDb art = new ArtMapDb();
-            art.ArtName = Path.GetFileNameWithoutExtension(artfile);
-            art.ArtPath = artfile;
-            BitmapImage img = new BitmapImage(new Uri(artfile));
-            art.ArtDimentions = $"{img.Width} X {img.Height}";
-            FileInfo fi = new FileInfo(artfile);
-            art.ArtFileSize = $"{fi.Length}";
-            art.ArtExists = true;
-            art.ArtDateAdded = fi.CreationTime;
+            try
+            {
+                ArtMapDb art = new ArtMapDb();
+                art.ArtName = Path.GetFileNameWithoutExtension(artfile);
+                art.ArtPath = artfile;
+                BitmapImage img = new BitmapImage(new Uri(artfile));
+                art.ArtDimentions = $"{img.Width} X {img.Height}";
+                FileInfo fi = new FileInfo(artfile);
+                art.ArtFileSize = $"{fi.Length}";
+                art.ArtExists = true;
+                art.ArtDateAdded = fi.CreationTime;
 
-            Workspaces.Clear();
-            AddArtViewModel workspace = new AddArtViewModel(Workspaces, art);
-            Workspaces.Add(workspace);
-            SetActiveWorkspace(workspace);
+                Workspaces.Clear();
+                AddArtViewModel workspace = new AddArtViewModel(Workspaces, art);
+                Workspaces.Add(workspace);
+                SetActiveWorkspace(workspace);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ShowAddNewArt {ex.Message}");
+            }
         }
 
         private void ShowAddNewArt(object obj)

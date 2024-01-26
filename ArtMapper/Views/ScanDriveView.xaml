@@ -34,21 +34,47 @@
                 <DataGridTemplateColumn Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Width="100" Height="200" Source="{Binding ImageLocation, Mode=TwoWay}"></Image>
+                            <Image Width="200" Height="100" Source="{Binding ImageLocation, Mode=TwoWay}"></Image>
                             <!--<Button Content="Add Image" Command="{Binding BtnAddImage}" CommandParameter="{Binding ImageFullName}" />-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="100" IsReadOnly="True">
+                <DataGridTemplateColumn Width="120" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Add Image" Width="100" Height="23" Command="{Binding ButtonAddImage}" CommandParameter="{Binding ImageLocation}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Location:" Width="Auto" IsReadOnly="True" Binding="{Binding ImageLocation}" />
-                <!--<DataGridTextColumn Header="File Size:" Width="100" IsReadOnly="True" Binding="{Binding ImageSize}" />-->
-                <DataGridTextColumn Header="Create Date:" Width="150" IsReadOnly="True" Binding="{Binding ImageCreate}" />
+                <DataGridTemplateColumn Header="Location:" Width="500" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Name:" />
+                                    <TextBlock Text="{Binding Path=ImageName}" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Location:" />
+                                    <TextBlock Text="{Binding Path=ImageLocation}" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Size:" />
+                                    <TextBlock Text="{Binding Path=ImageSize}" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Dimentions:" />
+                                    <TextBlock Text="{Binding Path=ImageDim}" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Created Date" />
+                                    <TextBlock Text="{Binding Path=ImageCreate}" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <Button Content="View Image" Width="100" Height="23" HorizontalAlignment="Left" Command="{Binding ButtonViewImage}" CommandParameter="{Binding ImageLocation}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

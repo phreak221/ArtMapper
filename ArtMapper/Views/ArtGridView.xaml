@@ -21,15 +21,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" Grid.Column="0" Height="540" SelectedItem="{Binding SelectedArtMap}" ItemTemplate="{StaticResource MoviePosterTemplate}" ItemsSource="{Binding MoviePosterList}">
-
-        </ListView>
-        <!--<ListView Grid.Row="0" Grid.Column="0" ItemTemplate="{StaticResource MoviePosterTemplate}" ItemsSource="{Binding Path=MoviePosterList}">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="5" />
-                </ItemsPanelTemplate> 
-            </ListView.ItemsPanel>
-        </ListView>-->
+        <ListView Grid.Column="0" Grid.Row="0" Height="540" SelectedItem="{Binding MoviePoster}" ItemsSource="{Binding ArtPosterList}" ItemTemplate="{StaticResource ArtPosterTemplate}" />
     </Grid>
 </UserControl>

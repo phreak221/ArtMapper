@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ArtMapper.Config;
 using ArtMapper.Models;
@@ -14,16 +16,18 @@ namespace ArtMapper.ViewModels
     public class ArtGridViewModel : ViewModelBase
     {
         private ObservableCollection<ViewModelBase> _workspaces;
-        private ObservableCollection<ArtMapDb> _moviePosterList;
+        private ObservableCollection<ArtMapModel> _artPosterList;
         
-        public ObservableCollection<ArtMapDb> MoviePosterList
+        public ICommand BtnOpenLocation { get; set; }
+
+        public ObservableCollection<ArtMapModel> ArtPosterList
         {
-            get => _moviePosterList;
+            get => _artPosterList;
             set
             {
-                if (_moviePosterList == value) return;
-                _moviePosterList = value;
-                OnPropertyChanged("MoviePosterList");
+                if (_artPosterList == value) return;
+                _artPosterList = value;
+                OnPropertyChanged("ArtPosterList");
             }
         }
 
@@ -43,15 +47,50 @@ namespace ArtMapper.ViewModels
         public ArtGridViewModel(ObservableCollection<ViewModelBase> workspaces)
         {
             //AddFile_Drop = new RelayCommand(AddArtToList);
+            BtnOpenLocation = new RelayCommand(OpenImgLocation);
             BuildMoviePosterList();
             _workspaces = workspaces;
         }
-        
+
+        private void OpenImgLocation(object obj)
+        {
+            string path = (string)obj;
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = path,
+                FileName = "explorer.exe"
+            };
+            Process.Start(startInfo);
+        }
+
         private void BuildMoviePosterList()
         {
             SQLiteConnection conn = new SQLiteConnection(Settings.DbPath, SQLiteOpenFlags.ReadWrite, false);
-            MoviePosterList = new ObservableCollection<ArtMapDb>(conn.Table<ArtMapDb>().ToList());
-            conn.Close();
+            try
+            {
+                ArtPosterList = new ObservableCollection<ArtMapModel>();
+                var arts = conn.Table<ArtMapDb>().ToList();
+                foreach (var art in arts)
+                {
+                    ArtPosterList.Add(new ArtMapModel()
+                    {
+                        ArtName = art.ArtName,
+                        ArtPath = art.ArtPath,
+                        ArtDimentions = art.ArtDimentions,
+                        ArtDateAdded = art.ArtDateAdded,
+                        ArtExists = art.ArtExists,
+                        OpenLocationCommand = BtnOpenLocation
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"BuildMoviePoserList {ex.Message}");
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
     }
 }
